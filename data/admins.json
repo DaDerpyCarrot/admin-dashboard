@@ -1,0 +1,26 @@
+[
+  {
+    "username": "thonk",
+    "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
+    "role": "admin",
+    "isActive": true
+  },
+  {
+    "username": "Haven",
+    "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
+    "role": "moderator",
+    "isActive": true
+  },
+    {
+    "username": "hyejinn",
+    "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
+    "role": "moderator",
+    "isActive": true
+  },
+    {
+    "username": "nero",
+    "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
+    "role": "moderator",
+    "isActive": true
+  }
+]
