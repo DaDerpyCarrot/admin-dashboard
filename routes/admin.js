@@ -21,6 +21,7 @@ const verifyAdminToken = require("../middleware/verifyAdminToken");
 const {
   getFullPlayerAdminView,
   getUserInternalData,
+  updateUserData,
   updateUserInternalData,
   banUser,
   exportSegmentPlayersByName
@@ -515,6 +516,14 @@ router.patch("/player/:playFabId/internal", verifyAdminToken, async (req, res, n
     const beforeInternalData = beforeResult?.data?.Data || {};
 
     const result = await updateUserInternalData(playFabId, dataToUpdate);
+
+    await updateUserData(playFabId, {}, [
+      "AdminNote",
+      "AccountStatus",
+      "ReviewState",
+      "StrikeCount",
+      "ModerationHistory"
+    ]);
 
     const mergedInternalData = buildInternalDataShapeForSummary(beforeInternalData, {
       accountStatus,

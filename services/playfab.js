@@ -284,6 +284,14 @@ async function getFullPlayerAdminView(playFabId) {
   };
 }
 
+async function updateUserData(playFabId, dataObject = {}, keysToRemove = []) {
+  return callPlayFab("/Server/UpdateUserData", {
+    PlayFabId: playFabId,
+    Data: dataObject,
+    KeysToRemove: keysToRemove
+  });
+}
+
 module.exports = {
   callPlayFab,
   getUserData,
@@ -292,6 +300,7 @@ module.exports = {
   getPlayerStatistics,
   getPlayerSegments,
   resetPlayFabPassword,
+  updateUserData,
   updateUserInternalData,
   banUser,
   getAllSegments,
