@@ -12,14 +12,13 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "https://roadimentary-dashboard.onrender.com",
-  process.env.FRONTEND_ORIGIN,
+  "https://roadimentary.wuaze.com",
   "http://127.0.0.1:5500",
   "http://localhost:5500"
-].filter(Boolean);
+];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow tools like Postman / server-to-server requests with no origin
+  origin(origin, callback) {
     if (!origin) {
       return callback(null, true);
     }
@@ -29,8 +28,12 @@ app.use(cors({
     }
 
     return callback(new Error(`CORS blocked for origin: ${origin}`));
-  }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options("*", cors());
 
 app.use(express.json());
 
