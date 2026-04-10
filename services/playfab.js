@@ -80,6 +80,15 @@ async function getPlayerSegments(playFabId) {
   });
 }
 
+/* ================= PASSWORD RESET ================= */
+
+async function resetPlayFabPassword(token, password) {
+  return callPlayFab("/Admin/ResetPassword", {
+    Token: token,
+    Password: password
+  });
+}
+
 /* ================= WRITES ================= */
 
 async function updateUserInternalData(playFabId, dataObject, keysToRemove = []) {
@@ -185,8 +194,6 @@ async function downloadExportFragments(fragmentUrls) {
       continue;
     }
 
-    // PlayFab export fragments are TSV files:
-    // first line = headers, remaining lines = rows
     const headers = lines[0].split("\t").map(h => h.trim());
 
     if (!loggedHeader) {
@@ -284,6 +291,7 @@ module.exports = {
   getPlayerProfile,
   getPlayerStatistics,
   getPlayerSegments,
+  resetPlayFabPassword,
   updateUserInternalData,
   banUser,
   getAllSegments,
