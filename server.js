@@ -17,7 +17,7 @@ const allowedOrigins = [
   "http://localhost:5500"
 ];
 
-app.use(cors({
+const corsOptions = {
   origin(origin, callback) {
     if (!origin) {
       return callback(null, true);
@@ -31,10 +31,9 @@ app.use(cors({
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
-}));
+};
 
-app.options("*", cors());
-
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
