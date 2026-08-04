@@ -12,7 +12,7 @@
     "email": "jewieroncastillo@gmail.com",
     "playFabId": "749A34140949DD32",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
-    "role": "moderator",
+    "role": "admin",
     "isActive": true
   },
     {
@@ -20,7 +20,7 @@
     "email": "sohyejinnn7@gmail.com",
     "playFabId": "D7E70BF279A8E13B",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
-    "role": "moderator",
+    "role": "admin",
     "isActive": true
   },
     {
@@ -28,7 +28,7 @@
     "email": "benjrivera7@gmail.com",
     "playFabId": "6C7ED65C1A1D74D6",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
-    "role": "moderator",
+    "role": "admin",
     "isActive": true
   }
 ]
