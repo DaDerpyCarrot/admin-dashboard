@@ -10,13 +10,20 @@ const authRoutes = require("./routes/auth");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = [
-  "https://roadimentary-dashboard.onrender.com",
-  "https://roadimentary-website.onrender.com",
-  "https://roadimentary.wuaze.com",
+function normalizeOrigin(value) {
+  return String(value || "").trim().replace(/\/+$/, "");
+}
+
+const allowedOrigins = new Set([
+  normalizeOrigin(
+    process.env.FRONTEND_ORIGIN || "https://roadimentary-website.onrender.com"
+  ),
+  normalizeOrigin(
+    process.env.DASHBOARD_ORIGIN || "https://roadimentary-dashboard.onrender.com"
+  ),
   "http://127.0.0.1:5500",
   "http://localhost:5500"
-];
+].filter(Boolean));
 
 const corsOptions = {
   origin(origin, callback) {
@@ -24,7 +31,7 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.has(normalizeOrigin(origin))) {
       return callback(null, true);
     }
 

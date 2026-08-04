@@ -1,19 +1,5 @@
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcryptjs");
-
-const ADMINS_FILE = path.join(__dirname, "..", "data", "admins.json");
-
-function loadAdmins() {
-  try {
-    const raw = fs.readFileSync(ADMINS_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error("Failed to load admins.json:", error);
-    return [];
-  }
-}
+const { loadAdmins } = require("../services/adminAccounts");
 
 const express = require("express");
 const jwt = require("jsonwebtoken");

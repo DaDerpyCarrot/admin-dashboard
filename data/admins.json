@@ -1,24 +1,32 @@
 [
   {
     "username": "thonk",
+    "email": "daderpycarrot9@gmail.com",
+    "playFabId": "6149ECC49A0980B8",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
     "role": "admin",
     "isActive": true
   },
   {
     "username": "Haven",
+    "email": "jewieroncastillo@gmail.com",
+    "playFabId": "749A34140949DD32",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
     "role": "moderator",
     "isActive": true
   },
     {
     "username": "hyejinn",
+    "email": "sohyejinnn7@gmail.com",
+    "playFabId": "D7E70BF279A8E13B",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
     "role": "moderator",
     "isActive": true
   },
     {
-    "username": "nero",
+    "username": "nerokeii",
+    "email": "benjrivera7@gmail.com",
+    "playFabId": "6C7ED65C1A1D74D6",
     "passwordHash": "$2b$10$i85mOAEzQ/Q3ONmrHayBoOhp9tBuWykhIRkSY/D.Wqczaj1L.ln9C",
     "role": "moderator",
     "isActive": true

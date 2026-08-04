@@ -35,6 +35,12 @@ async function callPlayFab(endpoint, body = {}) {
 
 /* ================= BASIC READS ================= */
 
+async function authenticateSessionTicket(sessionTicket) {
+  return callPlayFab("/Server/AuthenticateSessionTicket", {
+    SessionTicket: sessionTicket
+  });
+}
+
 async function getUserData(playFabId, keys = null) {
   const body = { PlayFabId: playFabId };
 
@@ -294,6 +300,7 @@ async function updateUserData(playFabId, dataObject = {}, keysToRemove = []) {
 
 module.exports = {
   callPlayFab,
+  authenticateSessionTicket,
   getUserData,
   getUserInternalData,
   getPlayerProfile,
