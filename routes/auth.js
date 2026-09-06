@@ -3,9 +3,15 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 
 const {
+  registerPlayFabUser,
+  addOrUpdateContactEmail,
   authenticateSessionTicket,
   resetPlayFabPassword
 } = require("../services/playfab");
+const {
+  getAllowedRegistrationDomains,
+  validateRegistrationInput
+} = require("../services/registrationPolicy");
 const {
   findActiveAdminByPlayFabId,
   normalizePlayFabId
@@ -123,6 +129,91 @@ function publicAdmin(admin) {
 router.use((req, res, next) => {
   res.set("Cache-Control", "no-store");
   next();
+});
+
+/* ================= STUDENT ACCOUNT REGISTRATION ================= */
+
+router.post("/register", async (req, res, next) => {
+  const allowedDomains = getAllowedRegistrationDomains();
+  const validation = validateRegistrationInput(req.body, allowedDomains);
+
+  if (!validation.valid) {
+    return res.status(400).json({
+      ok: false,
+      message: validation.message
+    });
+  }
+
+  try {
+    let registration;
+
+    try {
+      registration = await registerPlayFabUser({
+        username: validation.username,
+        email: validation.email,
+        password: validation.password
+      });
+    } catch (error) {
+      const playFabError = error?.details?.error;
+
+      if (playFabError === "EmailAddressNotAvailable") {
+        return res.status(409).json({
+          ok: false,
+          message: "An account already exists for that email address."
+        });
+      }
+
+      if (playFabError === "UsernameNotAvailable") {
+        return res.status(409).json({
+          ok: false,
+          message: "That username is already taken."
+        });
+      }
+
+      if (
+        playFabError === "InvalidEmailAddress" ||
+        playFabError === "InvalidUsername" ||
+        playFabError === "InvalidPassword"
+      ) {
+        return res.status(400).json({
+          ok: false,
+          message: error.message || "The registration details are invalid."
+        });
+      }
+
+      throw error;
+    }
+
+    const sessionTicket = registration?.data?.SessionTicket;
+
+    if (!sessionTicket) {
+      const error = new Error("PlayFab created no usable registration session.");
+      error.status = 502;
+      throw error;
+    }
+
+    let verificationEmailQueued = true;
+
+    try {
+      await addOrUpdateContactEmail(sessionTicket, validation.email);
+    } catch (error) {
+      verificationEmailQueued = false;
+      console.error(
+        "Account created, but contact email setup failed:",
+        error?.details?.error || error.message
+      );
+    }
+
+    return res.status(201).json({
+      ok: true,
+      verificationEmailQueued,
+      message: verificationEmailQueued
+        ? "Account created. Check your DLSU-D email to verify the account before signing in."
+        : "Account created, but the verification email could not be queued. Sign in once to request another verification email."
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 /* ================= LANDING-PAGE ADMIN SSO ================= */

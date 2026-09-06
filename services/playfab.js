@@ -9,14 +9,14 @@ if (!PLAYFAB_TITLE_ID || !PLAYFAB_SECRET_KEY) {
   console.warn("Missing PlayFab environment variables.");
 }
 
-async function callPlayFab(endpoint, body = {}) {
+async function requestPlayFab(endpoint, body = {}, extraHeaders = {}) {
   const url = `https://${PLAYFAB_TITLE_ID}.playfabapi.com${endpoint}`;
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-SecretKey": PLAYFAB_SECRET_KEY
+      ...extraHeaders
     },
     body: JSON.stringify(body)
   });
@@ -31,6 +31,43 @@ async function callPlayFab(endpoint, body = {}) {
   }
 
   return data;
+}
+
+async function callPlayFab(endpoint, body = {}) {
+  return requestPlayFab(endpoint, body, {
+    "X-SecretKey": PLAYFAB_SECRET_KEY
+  });
+}
+
+async function callPlayFabPublic(endpoint, body = {}) {
+  return requestPlayFab(endpoint, body);
+}
+
+async function callPlayFabAsPlayer(endpoint, sessionTicket, body = {}) {
+  return requestPlayFab(endpoint, body, {
+    "X-Authorization": sessionTicket
+  });
+}
+
+/* ================= ACCOUNT REGISTRATION ================= */
+
+async function registerPlayFabUser({ username, email, password }) {
+  return callPlayFabPublic("/Client/RegisterPlayFabUser", {
+    TitleId: PLAYFAB_TITLE_ID,
+    Username: username,
+    Email: email,
+    Password: password,
+    DisplayName: username,
+    RequireBothUsernameAndEmail: false
+  });
+}
+
+async function addOrUpdateContactEmail(sessionTicket, email) {
+  return callPlayFabAsPlayer(
+    "/Client/AddOrUpdateContactEmail",
+    sessionTicket,
+    { EmailAddress: email }
+  );
 }
 
 /* ================= BASIC READS ================= */
@@ -300,6 +337,8 @@ async function updateUserData(playFabId, dataObject = {}, keysToRemove = []) {
 
 module.exports = {
   callPlayFab,
+  registerPlayFabUser,
+  addOrUpdateContactEmail,
   authenticateSessionTicket,
   getUserData,
   getUserInternalData,
