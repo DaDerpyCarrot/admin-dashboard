@@ -4,6 +4,8 @@ const { loadAdmins } = require("../services/adminAccounts");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const verifyAdminToken = require("../middleware/verifyAdminToken");
+const { createAdminFriendsRouter } = require("./admin-friends");
+const { sanitizeAdminInternalData } = require("../services/adminFriends");
 const {
   getFullPlayerAdminView,
   getUserInternalData,
@@ -367,6 +369,7 @@ router.post("/login", async (req, res) => {
 });
 
 /* ================= PROTECTED ROUTES ================= */
+router.use(createAdminFriendsRouter({ verifyAdminToken }));
 
 router.get("/me", verifyAdminToken, (req, res) => {
   res.json({
@@ -466,6 +469,7 @@ router.get("/player/:playFabId", verifyAdminToken, async (req, res, next) => {
       ok: true,
       player: {
         ...player,
+        internalData: sanitizeAdminInternalData(player.internalData || {}),
         moderationHistory
       }
     });
