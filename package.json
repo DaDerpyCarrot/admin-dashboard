@@ -6,7 +6,10 @@
   
   "scripts": {
     "test": "node --test",
-    "start": "node server.js"
+    "start": "node server.js",
+    "ledger:init": "node scripts/init-ledger-db.js",
+    "ledger:import": "node scripts/import-purchase-events.js",
+    "ledger:configure": "node scripts/configure-playfab-ledger.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +20,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3"
   }
 }

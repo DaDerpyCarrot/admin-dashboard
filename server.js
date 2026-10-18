@@ -6,6 +6,7 @@ dotenv.config();
 
 const adminRoutes = require("./routes/admin");
 const authRoutes = require("./routes/auth");
+const { defaultRouter: playerLedgerRouter } = require("./routes/player-transactions");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -53,6 +54,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", playerLedgerRouter());
 
 /* ================= ERROR HANDLER ================= */
 
