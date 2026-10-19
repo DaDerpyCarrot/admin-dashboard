@@ -5,6 +5,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const verifyAdminToken = require("../middleware/verifyAdminToken");
 const { createAdminFriendsRouter } = require("./admin-friends");
+const { createAdminTransactionsRouter } = require("./admin-transactions");
 const { sanitizeAdminInternalData } = require("../services/adminFriends");
 const {
   getFullPlayerAdminView,
@@ -370,6 +371,7 @@ router.post("/login", async (req, res) => {
 
 /* ================= PROTECTED ROUTES ================= */
 router.use(createAdminFriendsRouter({ verifyAdminToken }));
+router.use(createAdminTransactionsRouter({ verifyAdminToken }));
 
 router.get("/me", verifyAdminToken, (req, res) => {
   res.json({
