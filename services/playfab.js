@@ -337,6 +337,7 @@ async function updateUserData(playFabId, dataObject = {}, keysToRemove = []) {
 
 module.exports = {
   callPlayFab,
+  callPlayFabAsPlayer,
   registerPlayFabUser,
   addOrUpdateContactEmail,
   authenticateSessionTicket,
