@@ -373,6 +373,31 @@ router.post("/login", async (req, res) => {
 router.use(createAdminFriendsRouter({ verifyAdminToken }));
 router.use(createAdminTransactionsRouter({ verifyAdminToken }));
 
+router.get("/player/:playFabId/companies", (req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+}, verifyAdminToken, async (req, res) => {
+  try {
+    const { playerId, pageCursor } = require("../services/company-domain");
+    const id = playerId(req.params.playFabId);
+    const after = pageCursor(req.query);
+    const title = String(process.env.PLAYFAB_TITLE_ID || "").trim().toUpperCase();
+    if (!/^[A-Z0-9]{1,32}$/.test(title)) throw new Error("Companies title is not configured.");
+    const { getLedgerPool } = require("../services/ledger-db");
+    const { createCompanyStore } = require("../services/company-store");
+    const page = await createCompanyStore(getLedgerPool()).list(title, id, after);
+    // Only the selected player's current memberships/ownership. No roster or invites.
+    const companies = page.items.map(({ name, role }) => ({ name, role }));
+    res.json({ ok: true, playerId: id, companies, nextCursor: page.nextCursor });
+  } catch (error) {
+    if (error?.publicCompanyError && error.status === 400) {
+      return res.status(400).json({ ok: false, message: error.message });
+    }
+    // Do not expose database/connection details or return a false empty list.
+    res.status(503).json({ ok: false, message: "Company memberships are unavailable. Use Refresh stats to retry." });
+  }
+});
+
 router.get("/me", verifyAdminToken, (req, res) => {
   res.json({
     ok: true,
