@@ -9,7 +9,7 @@ if (!PLAYFAB_TITLE_ID || !PLAYFAB_SECRET_KEY) {
   console.warn("Missing PlayFab environment variables.");
 }
 
-async function requestPlayFab(endpoint, body = {}, extraHeaders = {}) {
+async function requestPlayFab(endpoint, body = {}, extraHeaders = {}, { signal } = {}) {
   const url = `https://${PLAYFAB_TITLE_ID}.playfabapi.com${endpoint}`;
 
   const response = await fetch(url, {
@@ -18,7 +18,8 @@ async function requestPlayFab(endpoint, body = {}, extraHeaders = {}) {
       "Content-Type": "application/json",
       ...extraHeaders
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    signal
   });
 
   const data = await response.json();
@@ -33,10 +34,10 @@ async function requestPlayFab(endpoint, body = {}, extraHeaders = {}) {
   return data;
 }
 
-async function callPlayFab(endpoint, body = {}) {
+async function callPlayFab(endpoint, body = {}, options) {
   return requestPlayFab(endpoint, body, {
     "X-SecretKey": PLAYFAB_SECRET_KEY
-  });
+  }, options);
 }
 
 async function callPlayFabPublic(endpoint, body = {}) {

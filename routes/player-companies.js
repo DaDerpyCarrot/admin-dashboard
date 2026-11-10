@@ -2,6 +2,7 @@
 const express = require("express");
 const { createHash } = require("node:crypto");
 const { createCompanyStore } = require("../services/company-store");
+const { boardMetric, createCompanyRankings } = require("../services/company-rankings");
 const { PUBLIC_PROFILE_KEYS, companyError, invalid, playerId, uuid, name, publicName,
   body, pageCursor, projectProfile } = require("../services/company-domain");
 
@@ -20,10 +21,11 @@ function deadline(operation, ms) {
   ]).finally(() => clearTimeout(timer));
 }
 
-function createPlayerCompaniesRouter({ settings, store, authenticate, readAccount, readPublic,
+function createPlayerCompaniesRouter({ settings, store, authenticate, readAccount, readPublic, readStats,
   now = Date.now, upstreamTimeoutMs = 8000, logger = () => {} }) {
   const router = express.Router();
   const windows = new Map();
+  const rankings = createCompanyRankings({ readStats, now });
   function admit(res, key, limit) {
     const time = now();
     let window = windows.get(key);
@@ -88,6 +90,16 @@ function createPlayerCompaniesRouter({ settings, store, authenticate, readAccoun
   router.get("/:companyId", async (req, res) => {
     const { title, actor } = req.companyContext;
     const result = await store().roster(title, uuid(req.params.companyId), actor.id);
+    res.json({ ok: true, ...result });
+  });
+  router.get("/:companyId/boards", async (req, res) => {
+    const { title, actor } = req.companyContext;
+    const companyId = uuid(req.params.companyId);
+    const metric = boardMetric(req.query);
+    admit(res, "board:" + title + ":" + actor.id, 16);
+    const companyStore = store();
+    const result = await rankings({ title, companyId, actor: actor.id, metric,
+      loadRoster: () => companyStore.roster(title, companyId, actor.id, { includePending: false }) });
     res.json({ ok: true, ...result });
   });
   router.post("/:companyId/invites", async (req, res) => {
@@ -158,6 +170,9 @@ function defaultRouter() {
     authenticate: ticket => playfab().authenticateSessionTicket(ticket),
     readAccount: (ticket, id) => playfab().callPlayFabAsPlayer("/Client/GetAccountInfo", ticket, { PlayFabId: id }),
     readPublic: (ticket, id, keys) => playfab().callPlayFabAsPlayer("/Client/GetUserData", ticket, { PlayFabId: id, Keys: keys }),
+    readStats: (id, names, signal) => playfab().callPlayFab("/Server/GetPlayerStatistics", {
+      PlayFabId: id, StatisticNames: names
+    }, { signal }),
     logger: code => console.warn("Company request:", code)
   });
 }

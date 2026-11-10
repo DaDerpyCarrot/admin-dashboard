@@ -73,7 +73,7 @@ function createCompanyStore(pool) {
     return page(rows, row => ({ ...invitation(row), companyName: row.company_name,
       moderatorDisplayName: row.moderator_name }));
   }
-  async function roster(title, id, actor) {
+  async function roster(title, id, actor, { includePending = true } = {}) {
     return tx(async db => {
       const row = await access(db, title, id, actor, { lock: " FOR SHARE" });
       const { rows } = await db.query(
@@ -83,7 +83,7 @@ function createCompanyStore(pool) {
       ...rows.map(member => ({ playerId: member.player_id, displayName: member.display_name,
         role: "member", joinedAt: member.joined_at }))];
       const result = { company: company(row, actor), members };
-      if (row.moderator_id === actor) {
+      if (includePending && row.moderator_id === actor) {
         const pending = await db.query(
           "SELECT * FROM road_company_invites WHERE company_id = $1 AND expires_at > now() ORDER BY created_at, id", [id]);
         result.pendingInvites = pending.rows.map(invitation);
