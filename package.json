@@ -7,6 +7,8 @@
   "scripts": {
     "test": "node --test",
     "start": "node server.js",
+    "support:init": "node scripts/init-support-db.js",
+    "support:test": "node --test test/support-domain.test.js test/support-api.test.js test/support-store.test.js",
     "ledger:init": "node scripts/init-ledger-db.js",
     "ledger:import": "node scripts/import-purchase-events.js",
     "ledger:configure": "node scripts/configure-playfab-ledger.js"

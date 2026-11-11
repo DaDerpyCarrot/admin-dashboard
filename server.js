@@ -8,6 +8,7 @@ const adminRoutes = require("./routes/admin");
 const authRoutes = require("./routes/auth");
 const { defaultRouter: playerLedgerRouter } = require("./routes/player-transactions");
 const { defaultRouter: playerCompaniesRouter } = require("./routes/player-companies");
+const { defaultRouters: supportRouters } = require("./routes/support");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +45,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+// Support parses its own bounded JSON after authentication, before the shared parser.
+const support = supportRouters();
+app.use("/api/player/support", support.player);
+app.use("/api/admin/support", support.admin);
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
